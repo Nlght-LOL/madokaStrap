@@ -92,7 +92,7 @@ def setup_linux_integration():
         os.path.join(
             os.path.dirname(__file__),
             "..",
-            "main.py",
+            "madokaStrap.py",
         )
     )
 
@@ -100,9 +100,7 @@ def setup_linux_integration():
         script_path
     )
 
-    register_uri_handler(
-        script_path
-    )
+    register_uri_handler()
 
     print(
         Fore.GREEN

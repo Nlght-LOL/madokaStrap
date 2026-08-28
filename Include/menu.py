@@ -10,7 +10,7 @@ from .utils import (
 from .studio import launch_studio
 from .fastflags import ask_fastflags
 from .bootstrapper import launch_bootstrapper
-from .dxvk import setup_linux_integration
+from .integration import setup_linux_integration
 from .winrar import install_winrar
 from .runtime import choose_runtime
 

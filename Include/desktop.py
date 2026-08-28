@@ -12,7 +12,6 @@ from .config import (
 
 from .utils import get_system_info
 
-
 def create_desktop_entry(script_path):
     if not get_system_info()["is_linux"]:
         return False
@@ -290,6 +289,105 @@ def _verify_mime_handler(
 
         return False
 
+def _check_existing_cc_handler(new_desktop_name):
+    try:
+        result = subprocess.run(
+            [
+                "xdg-mime",
+                "query",
+                "default",
+                "x-scheme-handler/cc",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        current_handler = result.stdout.strip()
+
+        if not current_handler:
+            print(
+                Fore.GREEN
+                + "[*] No existing CC:// handler found."
+            )
+            return True
+
+        if current_handler == new_desktop_name:
+            print(
+                Fore.GREEN
+                + "[*] Cartii Launcher is already the CC:// handler."
+            )
+            return True
+
+        print(
+            Fore.YELLOW
+            + (
+                "[!] An existing CC:// handler was found: "
+                f"{current_handler}"
+            )
+        )
+
+        response = input(
+            Fore.CYAN
+            + (
+                "[?] Do you want to remove this handler "
+                "and replace it with Cartii Launcher? [y/N]: "
+            )
+        ).strip().lower()
+
+        if response not in ("y", "yes", "s", "sim"):
+            print(
+                Fore.RED
+                + "[!] Installation cancelled by user."
+            )
+            return False
+
+        desktop_file = DESKTOP_APPS / current_handler
+
+        if desktop_file.exists():
+            try:
+                desktop_file.unlink()
+
+                print(
+                    Fore.GREEN
+                    + f"[*] Removed existing CC:// handler: {desktop_file}"
+                )
+            except Exception as error:
+                print(
+                    Fore.RED
+                    + (
+                        "[!] Failed to remove existing CC:// handler: "
+                        f"{error}"
+                    )
+                )
+                return False
+        else:
+            print(
+                Fore.YELLOW
+                + (
+                    "[!] The registered handler file was not found in "
+                    f"{DESKTOP_APPS}: {current_handler}"
+                )
+            )
+
+        return True
+
+    except FileNotFoundError:
+        print(
+            Fore.RED
+            + "[!] xdg-mime was not found."
+        )
+        return False
+
+    except Exception as error:
+        print(
+            Fore.RED
+            + (
+                "[!] Could not check existing CC:// handler: "
+                f"{error}"
+            )
+        )
+        return False
 
 def register_uri_handler():
     if not get_system_info()["is_linux"]:
@@ -340,6 +438,9 @@ def setup_linux_integration(script_path):
         Fore.CYAN
         + "[*] Setting up Linux integration..."
     )
+
+    if not _check_existing_cc_handler(desktop_name):
+        return False
 
     if not create_desktop_entry(
         script_path
