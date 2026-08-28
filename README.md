@@ -930,7 +930,7 @@ The launcher dynamically passes the arguments received from the bootstrapper ins
 
 ---
 
-# 🧹 Resetting the Wine Environment
+# 🧹 Resetting the Wine Environment.
 
 If the Wine prefix becomes corrupted, the isolated prefix can be removed.
 
@@ -943,7 +943,7 @@ rm -rf ~/.local/share/wineprefixes/madoka
 Afterward, run the Linux setup again:
 
 ```bash
-python3 launcher.py
+python3 madokaStrap.py
 ```
 
 and select:
