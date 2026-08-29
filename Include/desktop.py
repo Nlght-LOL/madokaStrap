@@ -12,6 +12,7 @@ from .config import (
 
 from .utils import get_system_info
 
+
 def create_desktop_entry(script_path):
     if not get_system_info()["is_linux"]:
         return False
@@ -41,7 +42,7 @@ Comment=Cartii Launcher CC URI Handler
 Exec="{python_path}" "{script_path}" --uri %u
 Type=Application
 Terminal=false
-MimeType=x-scheme-handler/cc;x-scheme-handler/madoka-player;
+MimeType=x-scheme-handler/cc;
 Categories=Game;
 Icon=madoka-player
 NoDisplay=true
@@ -195,7 +196,7 @@ def _register_mime_handler(
         print(
             Fore.RED
             + (
-                f"[!] Failed to register "
+                "[!] Failed to register "
                 f"{mime_type}"
             )
         )
@@ -289,7 +290,8 @@ def _verify_mime_handler(
 
         return False
 
-def _check_existing_cc_handler(new_desktop_name):
+
+def _check_existing_cc_handler(desktop_name):
     try:
         result = subprocess.run(
             [
@@ -310,13 +312,15 @@ def _check_existing_cc_handler(new_desktop_name):
                 Fore.GREEN
                 + "[*] No existing CC:// handler found."
             )
+
             return True
 
-        if current_handler == new_desktop_name:
+        if current_handler == desktop_name:
             print(
                 Fore.GREEN
                 + "[*] Cartii Launcher is already the CC:// handler."
             )
+
             return True
 
         print(
@@ -335,11 +339,17 @@ def _check_existing_cc_handler(new_desktop_name):
             )
         ).strip().lower()
 
-        if response not in ("y", "yes", "s", "sim"):
+        if response not in (
+            "y",
+            "yes",
+            "s",
+            "sim",
+        ):
             print(
-                Fore.RED
+                Fore.YELLOW
                 + "[!] Installation cancelled by user."
             )
+
             return False
 
         desktop_file = DESKTOP_APPS / current_handler
@@ -350,22 +360,30 @@ def _check_existing_cc_handler(new_desktop_name):
 
                 print(
                     Fore.GREEN
-                    + f"[*] Removed existing CC:// handler: {desktop_file}"
+                    + (
+                        "[*] Removed existing CC:// handler: "
+                        f"{desktop_file}"
+                    )
                 )
+
             except Exception as error:
                 print(
                     Fore.RED
                     + (
-                        "[!] Failed to remove existing CC:// handler: "
+                        "[!] Failed to remove existing "
+                        "CC:// handler: "
                         f"{error}"
                     )
                 )
+
                 return False
+
         else:
             print(
                 Fore.YELLOW
                 + (
-                    "[!] The registered handler file was not found in "
+                    "[!] The registered handler file was "
+                    "not found in "
                     f"{DESKTOP_APPS}: {current_handler}"
                 )
             )
@@ -377,17 +395,20 @@ def _check_existing_cc_handler(new_desktop_name):
             Fore.RED
             + "[!] xdg-mime was not found."
         )
+
         return False
 
     except Exception as error:
         print(
             Fore.RED
             + (
-                "[!] Could not check existing CC:// handler: "
-                f"{error}"
+                "[!] Could not check existing CC:// "
+                f"handler: {error}"
             )
         )
+
         return False
+
 
 def register_uri_handler():
     if not get_system_info()["is_linux"]:
@@ -395,12 +416,10 @@ def register_uri_handler():
 
     print(
         Fore.CYAN
-        + "[*] Registering URI handlers..."
+        + "[*] Registering CC:// URI handler..."
     )
 
-    desktop_name = (
-        "cartii-launcher.desktop"
-    )
+    desktop_name = "cartii-launcher.desktop"
 
     _update_desktop_database()
 
@@ -409,25 +428,12 @@ def register_uri_handler():
         desktop_name,
     )
 
-    madoka_registered = _register_mime_handler(
-        "x-scheme-handler/madoka-player",
-        desktop_name,
-    )
-
     _verify_mime_handler(
         "x-scheme-handler/cc",
         desktop_name,
     )
 
-    _verify_mime_handler(
-        "x-scheme-handler/madoka-player",
-        desktop_name,
-    )
-
-    return (
-        cc_registered
-        or madoka_registered
-    )
+    return cc_registered
 
 
 def setup_linux_integration(script_path):
@@ -439,7 +445,11 @@ def setup_linux_integration(script_path):
         + "[*] Setting up Linux integration..."
     )
 
-    if not _check_existing_cc_handler(desktop_name):
+    desktop_name = "cartii-launcher.desktop"
+
+    if not _check_existing_cc_handler(
+        desktop_name
+    ):
         return False
 
     if not create_desktop_entry(
@@ -451,8 +461,8 @@ def setup_linux_integration(script_path):
         print(
             Fore.YELLOW
             + (
-                "[!] URI handler registration "
-                "was not completely successful."
+                "[!] CC:// URI handler registration "
+                "was not successful."
             )
         )
 
