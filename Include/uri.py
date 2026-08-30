@@ -79,21 +79,15 @@ def build_place_launcher_url(place_id, ticket, year):
 def parse_uri(uri):
     if not isinstance(uri, str):
         raise ValueError(
-            "URI inválida: valor não é string"
+            "Invalid URI: value is not a string"
         )
 
     uri = uri.strip()
 
     if uri.startswith("madoka-player://"):
-        uri = (
-            "cc://"
-            + uri[len("madoka-player://"):]
-        )
+        uri = "cc://" + uri[len("madoka-player://"):]
 
-    elif (
-        uri.startswith("cc:")
-        and not uri.startswith("cc://")
-    ):
+    elif uri.startswith("cc:") and not uri.startswith("cc://"):
         uri = "cc://" + uri[3:]
 
     elif not (
@@ -113,7 +107,7 @@ def parse_uri(uri):
 
     except Exception as error:
         raise ValueError(
-            f"Falha ao interpretar URI: {error}"
+            f"Failed to parse URI: {error}"
         )
 
     year = detect_year(query_params)
@@ -151,49 +145,76 @@ def parse_uri(uri):
         except Exception:
             pass
 
-    params = [
-        "-a",
-        "http://madxka.com/Login/Negotiate.ashx",
-    ]
+    params = []
 
-    if place_launcher_url:
-        params.extend(
-            [
+    if year == "2018":
+        params.extend([
+            "--play",
+            "-a",
+            "http://madxka.com/Login/Negotiate.ashx",
+        ])
+
+        if place_launcher_url:
+            params.extend([
                 "-j",
                 place_launcher_url,
-            ]
-        )
+            ])
 
-    elif place_id and ticket:
-        fallback_url = build_place_launcher_url(
-            place_id,
-            ticket,
-            year,
-        )
-
-        if fallback_url:
-            params.extend(
-                [
-                    "-j",
-                    fallback_url,
-                ]
+        elif place_id and ticket:
+            fallback_url = build_place_launcher_url(
+                place_id,
+                ticket,
+                year,
             )
 
-    if ticket:
-        params.extend(
-            [
+            if fallback_url:
+                params.extend([
+                    "-j",
+                    fallback_url,
+                ])
+
+        if ticket:
+            params.extend([
                 "-t",
                 ticket,
-            ]
-        )
+            ])
 
-    if place_id:
-        params.extend(
-            [
+    else:
+        params.extend([
+            "-a",
+            "http://madxka.com/Login/Negotiate.ashx",
+        ])
+
+        if place_launcher_url:
+            params.extend([
+                "-j",
+                place_launcher_url,
+            ])
+
+        elif place_id and ticket:
+            fallback_url = build_place_launcher_url(
+                place_id,
+                ticket,
+                year,
+            )
+
+            if fallback_url:
+                params.extend([
+                    "-j",
+                    fallback_url,
+                ])
+
+        if ticket:
+            params.extend([
+                "-t",
+                ticket,
+            ])
+
+        if place_id:
+            params.extend([
                 "-placeId",
                 place_id,
-            ]
-        )
+            ])
 
     ignored_keys = {
         "place",
@@ -218,12 +239,10 @@ def parse_uri(uri):
         value = values[0]
 
         if key == "launchmode":
-            params.extend(
-                [
-                    flag,
-                    value,
-                ]
-            )
+            params.extend([
+                flag,
+                value,
+            ])
 
         elif key == "launchtime":
             params.append(
@@ -231,12 +250,10 @@ def parse_uri(uri):
             )
 
         else:
-            params.extend(
-                [
-                    flag,
-                    value,
-                ]
-            )
+            params.extend([
+                flag,
+                value,
+            ])
 
     return {
         "uri": params,
@@ -249,7 +266,6 @@ def parse_uri(uri):
         "ticket": ticket,
         "place_launcher_url": place_launcher_url,
     }
-
 
 def format_command_for_display(command):
     result = []
