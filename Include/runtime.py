@@ -843,14 +843,14 @@ def launch_runtime(
     )
 
     if runtime == "wine":
-        from .wine import launch_with_wine
+        from .wine import launch_wine
 
         print(
             Fore.CYAN
             + "[*] Starting with Wine..."
         )
 
-        return launch_with_wine(
+        return launch_wine(
             executable,
             args=normalized_args,
             cwd=cwd,
