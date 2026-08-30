@@ -36,13 +36,9 @@
 * Automatic DXVK installation
 * Automatic DXVK updates
 * DXVK DLL configuration
-* NVIDIA GPU support
-* Intel GPU support
-* AMD GPU support
 * Madoka Studio launcher
 * Cartii bootstrapper launcher
 * WinRAR installation inside the Wine prefix
-* 2017 client support
 * 2018 client support
 * 2020 client support
 * 2021 client support
