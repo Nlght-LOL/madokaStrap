@@ -600,23 +600,6 @@ The launcher can automatically create and configure this prefix.
 
 # 🔗 cc:// Support
 
-Cartii Launcher supports launching games through `cc://` URIs.
-
-The launcher can read:
-
-* Place ID
-* Join ticket
-* Client year
-* PlaceLauncher URL
-* Launch mode
-* Launch time
-* User ID
-* Universe ID
-
-It converts the received information into the launch arguments required by the Cartii client.
-
-URIs can also be launched manually:
-
 ```bash
 python3 launcher.py --uri "cc://..."
 ```
@@ -661,40 +644,6 @@ FastFlags are stored in:
 ```text
 fastFlags.json
 ```
-
-Supported value types include:
-
-* Boolean
-* Integer
-* Floating-point
-* String
-
-FastFlags can be automatically applied to detected Cartii clients.
-
----
-
-# 🎨 Madoka Studio
-
-The launcher includes support for launching Madoka Studio.
-
-On Linux, Madoka Studio is executed through Wine using the isolated Wine prefix.
-
----
-
-# 📦 Cartii Bootstrapper
-
-The launcher can start:
-
-```text
-cartiiLauncher.exe
-```
-
-directly.
-
-On Linux, the bootstrapper is executed using the configured Wine/GE-Proton runtime.
-
-The client arguments are passed dynamically to the runtime, allowing different client years and launch parameters to be used without hardcoding a specific year.
-
 ---
 
 # 🗜️ WinRAR
@@ -950,14 +899,6 @@ Setup Linux Integration
 
 ---
 
-# 🔄 Updating
-
-Update the repository:
-
-```bash
-git pull
-```
-
 Update Python dependencies:
 
 ```bash
@@ -965,12 +906,6 @@ pip install -r requirements.txt --upgrade
 ```
 
 GE-Proton and DXVK can be managed by the launcher when their respective setup/update functionality is used.
-
----
-
-# 📜 License
-
-Add the project's license information here.
 
 ---
 
