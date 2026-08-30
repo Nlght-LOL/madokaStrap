@@ -1,5 +1,6 @@
 import os
 import sys
+import getpass
 import subprocess
 import urllib.parse
 
@@ -291,11 +292,18 @@ def format_command_for_display(command):
 
 
 def get_client_executable(year):
+    runtime = get_selected_runtime()
+
+    if runtime == "ge-proton":
+        wine_user = "steamuser"
+    else:
+        wine_user = getpass.getuser()
+
     client_dir = (
         WINEPREFIX_DIR
         / "drive_c"
         / "users"
-        / "steamuser"
+        / wine_user
         / "AppData"
         / "Local"
         / "cartiirev"
@@ -308,74 +316,6 @@ def get_client_executable(year):
         return executable
 
     return None
-
-def write_launch_log(
-    log_file,
-    uri,
-    year,
-    args,
-    runtime,
-):
-    with open(
-        log_file,
-        "a",
-        encoding="utf-8",
-    ) as log:
-        log.write(
-            "\n\n"
-            + "=" * 70
-            + "\n"
-        )
-
-        log.write(
-            f"Cartii Launcher {VERSION}\n"
-        )
-
-        log.write(
-            f"Runtime: {runtime}\n"
-        )
-
-        log.write(
-            f"URI: {uri}\n"
-        )
-
-        log.write(
-            f"Year: {year}\n"
-        )
-
-        log.write(
-            "Arguments:\n"
-        )
-
-        hide_next = False
-
-        for arg in args:
-            if hide_next:
-                log.write(
-                    "  [ticket hidden]\n"
-                )
-
-                hide_next = False
-                continue
-
-            if arg == "-t":
-                log.write(
-                    "  -t\n"
-                )
-
-                hide_next = True
-                continue
-
-            log.write(
-                f"  {arg}\n"
-            )
-
-        log.write(
-            "=" * 70
-            + "\n"
-        )
-
-        log.flush()
 
 
 def handle_uri_launch(uri):

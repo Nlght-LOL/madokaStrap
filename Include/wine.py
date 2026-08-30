@@ -90,27 +90,3 @@ def build_runtime_command(executable, args=None):
         )
 
     return None
-
-
-def get_executable_path(year):
-    #user = os.getenv(
-    #    "USER",
-    #    "user",
-    #)
-
-    executable = (
-        WINEPREFIX_DIR
-        / "drive_c"
-        / "users"
-        / "steamuser"
-        / "AppData"
-        / "Local"
-        / "cartiirev"
-        / f"Client{year}"
-        / "CartiPlayerBeta.exe"
-    )
-
-    if executable.exists():
-        return executable
-
-    return None
